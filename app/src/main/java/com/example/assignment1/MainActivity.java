@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -72,21 +73,39 @@ public class MainActivity extends AppCompatActivity
         switch(item.getItemId()){
             case R.id.english:
                 Toast.makeText(this,"English",Toast.LENGTH_LONG).show();
-                setLocale(MainActivity.this,"");
+                setLocale("");
+                Intent intent = getIntent();
                 finish();
-                startActivity(getIntent());
+                startActivity(intent);
+               // setLocale(MainActivity.this,"");
+               // finish();
+                //startActivity(getIntent());
                 break;
             case R.id.chinese:
                 Toast.makeText(this,"中文",Toast.LENGTH_LONG).show();
-                setLocale(MainActivity.this,"chi");
+                setLocale("chi");
+                intent = getIntent();
                 finish();
-                startActivity(getIntent());
+                startActivity(intent);
+                //setLocale(MainActivity.this,"chi");
+                //finish();
+                //startActivity(getIntent());
                 break;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void setLocale( String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
+
+    }
+
+/*
     private void setLocale(Activity activity, String lang) {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
@@ -96,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         resources.updateConfiguration(config,resources.getDisplayMetrics());
 
     }
-
+*/
 
 
 }

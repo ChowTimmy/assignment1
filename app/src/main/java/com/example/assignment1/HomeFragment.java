@@ -45,8 +45,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     int DAY,MONTH;
     Spinner spin ;
     Calendar c;
-    final int[] S_DAY = new int[1];
-    final int[] S_MONTH = new int[1];
+    boolean refresh = true;
 
     FloatingActionButton fabtn;
     TextView tv_date;
@@ -65,6 +64,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     public static final String Sign = "signKey";
     public static final String Hibi = "hibiKey";
     public static final String Ketsu = "ketsuKey";
+    public static final String Gender_p = "positionKey";
 
     String [] gender;
 
@@ -99,6 +99,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
+
+
         fabtn = root.findViewById(R.id.fabtn);
 
         tv_date = root.findViewById(R.id.tv_date);
@@ -122,75 +124,77 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
 
         sharedPreferences = getContext().getSharedPreferences(mypreference, Context.MODE_PRIVATE);
-        if          (et_name.getText().toString().isEmpty()
-                || et_weight.getText().toString().isEmpty()
-                || et_height.getText().toString().isEmpty()
-                || spin.getSelectedItemId() == 0
-                || tv_date.getText().toString().isEmpty()) {
+        if (refresh == true) {
+            if (et_name.getText().toString().isEmpty()
+                    || et_weight.getText().toString().isEmpty()
+                    || et_height.getText().toString().isEmpty()
+                    || spin.getSelectedItemId() == 0
+                    || tv_date.getText().toString().isEmpty()) {
 
-            if (sharedPreferences.contains(Name)) {
-                et_name.setText(sharedPreferences.getString(Name, ""));
-            }
-            if (sharedPreferences.contains(Weight)) {
-                et_weight.setText(sharedPreferences.getString(Weight, ""));
-            }
-            if (sharedPreferences.contains(Height)) {
-                et_height.setText(sharedPreferences.getString(Height, ""));
-            }
-            if (sharedPreferences.contains(Date)) {
-                tv_date.setText(sharedPreferences.getString(Date, ""));
-            }
-            if (sharedPreferences.contains(Day)) {
-                date = sharedPreferences.getString(Day, "");
-            }
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            if(MONTH != 0 || DAY != 0) {
-                zodiac_cal( sharedPreferences.getInt(Ketsu, 0), sharedPreferences.getInt(Hibi, 0));
-            }
-            if (et_weight.getText().toString().isEmpty() || et_height.getText().toString().isEmpty())
-            {}
-            else {
-                calBmi(Double.parseDouble(et_height.getText().toString()), Double.parseDouble(et_weight.getText().toString()));
-
-                editor.putString(Name, et_name.getText().toString());
-                editor.putString(Height, et_height.getText().toString());
-                editor.putString(Weight, et_weight.getText().toString());
-                editor.putString(Gender, SEX);
-                if (spin.getSelectedItemId() == 0) {
-                    editor.putString(Gender, "");
+                if (sharedPreferences.contains(Name)) {
+                    et_name.setText(sharedPreferences.getString(Name, ""));
                 }
-                editor.putString(Date, tv_date.getText().toString());
-                editor.putString(BMI, str_bmi);
-                if (Double.parseDouble(str_bmi) < 18.5) {
-                    editor.putString(STATUS, getResources().getString(R.string.UnderWeight));
-                } else if (Double.parseDouble(str_bmi) < 25) {
-                    editor.putString(STATUS, getResources().getString(R.string.HealthyWeight));
-                } else if (Double.parseDouble(str_bmi) < 30) {
-                    editor.putString(STATUS, getResources().getString(R.string.OverWeight));
-                } else if (Double.parseDouble(str_bmi) < 35) {
-                    editor.putString(STATUS, getResources().getString(R.string.Obese));
-                } else if (Double.parseDouble(str_bmi) < 40) {
-                    editor.putString(STATUS, getResources().getString(R.string.S_Obese));
-                } else if (Double.parseDouble(str_bmi) >= 40) {
-                    editor.putString(STATUS, getResources().getString(R.string.M_Obese));
+                if (sharedPreferences.contains(Weight)) {
+                    et_weight.setText(sharedPreferences.getString(Weight, ""));
                 }
+                if (sharedPreferences.contains(Height)) {
+                    et_height.setText(sharedPreferences.getString(Height, ""));
+                }
+                if (sharedPreferences.contains(Date)) {
+                    tv_date.setText(sharedPreferences.getString(Date, ""));
+                }
+                if (sharedPreferences.contains(Day)) {
+                    date = sharedPreferences.getString(Day, "");
+                }
+                spin.setSelection(sharedPreferences.getInt(Gender_p, 0));
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if(sharedPreferences.getInt(Ketsu, 0) != 0 || sharedPreferences.getInt(Hibi, 0) != 0 )
+                zodiac_cal(sharedPreferences.getInt(Ketsu, -1), sharedPreferences.getInt(Hibi, -1));
 
-                if (Double.parseDouble(str_bmi) < 18.5) {
-                    editor.putString(Advice, getResources().getString(R.string.underweight));
-                } else if (Double.parseDouble(str_bmi) < 25) {
-                    editor.putString(Advice, getResources().getString(R.string.healthy));
-                } else if (Double.parseDouble(str_bmi) < 30) {
-                    editor.putString(Advice, getResources().getString(R.string.overweight));
+                if (et_weight.getText().toString().isEmpty() || et_height.getText().toString().isEmpty()) {
                 } else {
-                    editor.putString(Advice, getResources().getString(R.string.obese));
+                    calBmi(Double.parseDouble(et_height.getText().toString()), Double.parseDouble(et_weight.getText().toString()));
+
+                    editor.putString(Name, et_name.getText().toString());
+                    editor.putString(Height, et_height.getText().toString());
+                    editor.putString(Weight, et_weight.getText().toString());
+                    editor.putString(Gender, SEX);
+                    if (spin.getSelectedItemId() == 0) {
+                        editor.putString(Gender, "");
+                    }
+                    editor.putString(Date, tv_date.getText().toString());
+                    editor.putString(BMI, str_bmi);
+                    if (Double.parseDouble(str_bmi) < 18.5) {
+                        editor.putString(STATUS, getResources().getString(R.string.UnderWeight));
+                    } else if (Double.parseDouble(str_bmi) < 25) {
+                        editor.putString(STATUS, getResources().getString(R.string.HealthyWeight));
+                    } else if (Double.parseDouble(str_bmi) < 30) {
+                        editor.putString(STATUS, getResources().getString(R.string.OverWeight));
+                    } else if (Double.parseDouble(str_bmi) < 35) {
+                        editor.putString(STATUS, getResources().getString(R.string.Obese));
+                    } else if (Double.parseDouble(str_bmi) < 40) {
+                        editor.putString(STATUS, getResources().getString(R.string.S_Obese));
+                    } else if (Double.parseDouble(str_bmi) >= 40) {
+                        editor.putString(STATUS, getResources().getString(R.string.M_Obese));
+                    }
+
+                    if (Double.parseDouble(str_bmi) < 18.5) {
+                        editor.putString(Advice, getResources().getString(R.string.underweight));
+                    } else if (Double.parseDouble(str_bmi) < 25) {
+                        editor.putString(Advice, getResources().getString(R.string.healthy));
+                    } else if (Double.parseDouble(str_bmi) < 30) {
+                        editor.putString(Advice, getResources().getString(R.string.overweight));
+                    } else {
+                        editor.putString(Advice, getResources().getString(R.string.obese));
+                    }
                 }
+                editor.putString(Day, date);
+                editor.putString(Sign, sign);
+
+
+                editor.commit();
+
             }
-            editor.putString(Day, date);
-            editor.putString(Sign, sign);
-
-
-            editor.commit();
-
         }
 
         return root;
@@ -215,10 +219,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             c.set(Calendar.DAY_OF_MONTH, day);
             DAY = day;
             editor.putInt(Hibi, DAY);
-            Log.d("Timmy","diu nei");
             c.set(Calendar.MONTH, month);
             MONTH = month;
             editor.putInt(Ketsu, MONTH);
+            editor.commit();
 
         }
     };
@@ -232,6 +236,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     @Override
     public void onItemSelected(AdapterView<?> arg0,View arg1,int position, long id){
         SEX = arg0.getSelectedItem().toString();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Gender_p, position );
+        editor.commit();
     }
 
     @Override
@@ -312,6 +319,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                     editor.commit();
                     Toast.makeText(getContext().getApplicationContext(), getResources().getString(R.string.saved), Toast.LENGTH_LONG).show();
+                    refresh = false;
                 }
                 break;
 
@@ -339,6 +347,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 editor.putString(Advice, "" );
                 editor.putString(Day, "");
                 editor.putString(Sign, "");
+                editor.putInt(Hibi,0);
+                editor.putInt(Ketsu,0);
 
                 editor.commit();
                 Toast.makeText(getContext().getApplicationContext(),getResources().getString(R.string.clean_data) ,Toast.LENGTH_LONG).show();

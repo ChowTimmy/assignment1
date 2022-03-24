@@ -34,6 +34,7 @@ public class BMIFragment extends Fragment{
     public static final String BMI = "bmiKey";
     public static final String STATUS = "statusKey";
     public static final String Advice = "adviceKey";
+    public static final String Gender_p = "positionKey";
 
     TextView tv_get_name,tv_get_weight,tv_get_height,tv_get_gender,tv_get_date,tv_get_bmi,tv_get_status,tv_get_advice;
 
@@ -70,8 +71,11 @@ public class BMIFragment extends Fragment{
                 tv_get_height.setText(sharedpreferences.getString(Height, "") + " " + "CM");
             }
         }
-        if (sharedpreferences.contains(Gender)) {
-            tv_get_gender.setText(sharedpreferences.getString(Gender, ""));
+        String gender;
+        String[] gender_a = getResources().getStringArray(R.array.Gender);
+        if (sharedpreferences.getInt(Gender_p, 0) != 0) {
+            gender = gender_a[sharedpreferences.getInt(Gender_p, 0)];
+            tv_get_gender.setText(gender);
         }
         if (sharedpreferences.contains(Date)) {
             tv_get_date.setText(sharedpreferences.getString(Date, ""));

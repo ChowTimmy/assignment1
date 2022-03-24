@@ -26,6 +26,7 @@ public class ZodiacFragment extends Fragment {
     public static final String Gender = "genderKey";
     public static final String Day = "dayKey";
     public static final String Sign = "signKey";
+    public static final String Gender_p = "positionKey";
     String X;
 
 
@@ -63,8 +64,11 @@ public class ZodiacFragment extends Fragment {
         if (sharedPreferences.contains(Name)) {
             tv_get_zodiac_name.setText(sharedPreferences.getString(Name, ""));
         }
-        if (sharedPreferences.contains(Gender)) {
-            tv_get_zodiac_gender.setText(sharedPreferences.getString(Gender, ""));
+        String gender;
+        String[] gender_a = getResources().getStringArray(R.array.Gender);
+        if (sharedPreferences.getInt(Gender_p, 0) != 0) {
+            gender = gender_a[sharedPreferences.getInt(Gender_p, 0)];
+            tv_get_zodiac_gender.setText(gender);
         }
         if (sharedPreferences.contains(Sign)) {
             tv_get_zodiac_zodiac.setText(sharedPreferences.getString(Sign, ""));
